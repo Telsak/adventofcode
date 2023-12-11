@@ -28,10 +28,18 @@ def part_two():
     # do stuff again
     return
 
-start = time.time()
+full_or_not = '--full' in sys.argv
+data = get_data(small_or_not)
 
-data = get_data(True)
-output = part_one(data)
+# part one or two? part one is default
+if '-p2' in sys.argv:
+    print('== Running part two ==')
+    start = time.time()
+    output = part_two(data)
+else:
+    print('== Running part one (use -p2 for part two) ==')
+    start = time.time()
+    output = part_one(data)
 
 stop = time.time()
 
