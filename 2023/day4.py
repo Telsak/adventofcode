@@ -20,9 +20,30 @@ def get_data(ns=0):
         filedata = [line.strip() for line in file.readlines()]
     return filedata
     
-def part_one():
+def check_card(card):
+    id, card = card.split(':')
+    winners, mine = card.split('|')
+    return id.split()[1], winners.split(), mine.split()
+
+def tally_points(winning_numbers, drawn_numbers):
+    points = 0
+    luck = [n for n in drawn_numbers if n in winning_numbers]
+    if len(luck) > 0:
+        for n in luck:
+            if points == 0:
+                points += 1
+            else:
+                points *= 2
+    return points
+
+
+def part_one(indata):
     # do stuff
-    return
+    won_points = 0
+    for card in indata:
+        id, winners, mine = check_card(card)
+        won_points += tally_points(winners, mine)
+    return won_points
 
 def part_two():
     # do stuff again
@@ -30,8 +51,9 @@ def part_two():
 
 start = time.time()
 
-data = get_data(True)
+data = get_data()
 output = part_one(data)
+#output = part_two(data)
 
 stop = time.time()
 
