@@ -18,31 +18,53 @@ def get_data(ns=0):
     day_file = sys.argv[0].split('.')[0]
     with open (f'.//input//{day_file}_input{ns * "_small"}', 'r') as file:
         filedata = [line.strip() for line in file.readlines()]
+        filedata.append('')
     return filedata
 
-def generate_map(destination, source, r_len):
-    local_map = {}
-    for i in range(source, source + r_len):
-        local_map[i] = destination + i
-    return local_map
+def translate_values(data, mappings, destination):
+    # 50 98 2 (destination, source, range)
+    # 52 50 48
+    # in: 79 -> out: 81
+    # in: 98 -> out: 50
+
+    output = []
+    #print(f'=={destination}====================')
+    for number in data:
+        #print(f'number:{number}')
+        found_number = False
+        for mapping in mappings:
+            dst, src, r = [int(n) for n in mapping]
+            if src <= number < src + r:
+                new_number = dst + (number - src)
+                output.append(new_number)
+                #print(f'new:{new_number}')
+                found_number = True
+                break
+        if not found_number:
+            #print(f'new:{number}')
+            output.append(number)
+    return output
     
 def part_one(indata):
     # do stuff
-    maps = {}
-    locations = []
+    dest_mappings = []
     for line in indata:
         if 'seeds:' in line:
-            source = 'seeds'
-            maps[source] = [int(n) for n in line.split(':')[1].split()]
+            # grab the initial seeds
+            values = [[int(n) for n in line.split(':')[1].split()]]
         elif 'map:' in line:
+            # new transforms .. unnecessary?
             destination = line.split('-')[-1].split()[0]
+            dest_mappings = []
         elif len(line) > 0 and line[0].isdigit():
+            # keep adding to the transform list
             dest, src, r_len = [int(n) for n in line.split()]
-            if destination in maps:
-                maps[destination].update(generate_map(dest, src, r_len))
-            else:
-                maps[destination] = generate_map(dest, src, r_len)
-    return maps
+            dest_mappings.append([dest, src, r_len])
+        else:
+            # do actual work before next set of transforms
+            if len(dest_mappings) > 0:
+                values.append(translate_values(values[-1], dest_mappings, destination))
+    return min(values[-1])
 
 def part_two(indata):
     # do stuff again
