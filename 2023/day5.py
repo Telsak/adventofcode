@@ -68,7 +68,33 @@ def part_one(indata):
 
 def part_two(indata):
     # do stuff again
-    return
+    maps = {}
+    dest_mappings = []
+    for line in indata:
+        if 'seeds:' in line:
+            # grab the initial seeds - changed, in pairs now with
+            # (start, range) behavior
+            raw_values = [int(n) for n in line.split(':')[1].split()]
+            values = [[raw_values[i], raw_values[i+1]] for i in range(0, len(raw_values), 2)]
+        elif 'map:' in line:
+            # new transforms .. unnecessary?
+            destination = line.split('-')[-1].split()[0]
+            dest_mappings = []
+        elif len(line) > 0 and line[0].isdigit():
+            # keep adding to the transform list
+            dest, src, r_len = [int(n) for n in line.split()]
+            dest_mappings.append([dest, src, r_len])
+        else:
+            # do actual work before next set of transforms
+            if len(dest_mappings) > 0:
+                values = []
+                maps[destination] = dest_mappings
+                input(maps[destination])
+
+
+    for item in maps.items():
+        input(item)
+
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
