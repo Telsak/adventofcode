@@ -28,7 +28,7 @@ def part_two(indata):
     # do stuff again
     return
 
-full_or_not = '--full' in sys.argv
+full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
 
 # part one or two? part one is default
