@@ -21,8 +21,7 @@ def get_data(ns=0):
     return filedata
 
 def categorize_hand(hand):
-    hand_set = set(hand.split())
-    hand_l = len(hand_set)
+    hand_set = set([_ for _ in hand])
     cards = [hand.count(card) for card in hand_set]
     if 5 in cards:
         return 'five of a kind'
@@ -34,9 +33,18 @@ def categorize_hand(hand):
         else:
             return 'full house'
     elif 2 in cards:
-        return f'{"two " * cards.count(2) == 2}pair'
+        one_two = ["one ", "two "][int(cards.count(2) == 2)]
+        return f'{one_two}pair'
     return 'high card'
-    
+
+def tally_winnings(hands_list, offset=1):
+    winnings = 0
+    if len(hands_list) < 1:
+        return 0
+    for i, hand in enumerate(hands_list):
+        winnings += (hands_list[i][1] * (i + offset))
+    return winnings
+
 def part_one(indata):
     # do stuff
     hands = {
@@ -48,10 +56,23 @@ def part_one(indata):
             'one pair': [],
             'high card': [],
         }
+    char_map = ['AKQJT', 'EDCBA']
+
     for line in indata:
         hand, winning = line.split()
-        hands[categorize_hand(hand)] += (hand, int(winning))
-    return hands
+        hand = hand.translate(str.maketrans(char_map[0], char_map[1]))
+        hands[categorize_hand(hand)] += [(hand, int(winning))]
+    for category, hand_series in hands.items():
+        hands[category] = sorted(hand_series)
+
+    total_winnings, offset = 0, 1
+    categories = ['high card', 'one pair', 'two pair', 'three of a kind', 
+            'full house', 'four of a kind', 'five of a kind']
+    for i, category in enumerate(categories):
+        if i != 0:
+            offset += len(hands[categories[i-1]])
+        total_winnings += tally_winnings(hands[category], offset)
+    return total_winnings
 
 def part_two(indata):
     # do stuff again
