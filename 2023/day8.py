@@ -19,10 +19,29 @@ def get_data(ns=0):
     with open (f'.//input//{day_file}_input{ns * "_small"}', 'r') as file:
         filedata = [line.strip() for line in file.readlines()]
     return filedata
-    
+
+def traverse_map(moves, move_map):
+    steps = 0
+    sl = len(moves)
+    position = 'AAA'
+    while position != 'ZZZ':
+        dir = moves[steps % sl]
+        print(f'({position}) - Step {steps} moving {dir} to {move_map[position][dir]}')
+        position = move_map[position][dir]
+        steps += 1
+    return steps
+
 def part_one(indata):
     # do stuff
-    return
+    move_map = {}
+    for line in indata:
+        if len(line) > 0 and '=' not in line:
+            instructions = line
+        elif '=' in line:
+            destination, move = line.split(' = ')
+            move = move.strip('()').split(', ')
+            move_map[destination] = {'L': move[0], 'R': move[1]}
+    return traverse_map(instructions, move_map)
 
 def part_two(indata):
     # do stuff again
