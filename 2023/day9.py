@@ -19,10 +19,47 @@ def get_data(ns=0):
     with open (f'.//input//{day_file}_input{ns * "_small"}', 'r') as file:
         filedata = [line.strip() for line in file.readlines()]
     return filedata
+
+def expand_history(h):
+    # create the next line, the diff of the initial history values
+    # and do this for every subsequent line
+    return [h[i+1]-h[i] for i in range(len(h)-1)]
+
+def predict_history(h):
+    for i in range(len(h)-1, -1, -1):
+        if i > 0:
+            h[i-1][-1] = h[i][-1] + h[i-1][-2]
+    return h
+
     
+def display_grid(h):
+    h = predict_history(h)
+    print(250 * '=')
+    for line in h:
+        print(f"{''.join(str(value).center(10) for value in line): ^250}")
+    print('==== value out:', h[0][-1], '====================')
+    return h[0][-1]
+
+
 def part_one(indata):
     # do stuff
-    return
+    histories = []
+    sum_values = 0
+    for line in indata:
+        history = [[int(x) for x in line.split()]]
+        while not all(value == 0 for value in history[-1]):
+            history.append(expand_history(history[-1]))
+        histories.append(history)
+
+    for history in histories:
+        for line in history:
+            line.append(0)
+
+    for history in histories:
+        sum_values += display_grid(history)
+    
+
+    return sum_values
 
 def part_two(indata):
     # do stuff again
