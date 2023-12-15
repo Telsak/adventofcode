@@ -11,6 +11,8 @@
   └ ──── ─ ──══── ─ ────── ─ ───── ─ ──══── ─ ──── ─ ────── ─ ──══── ─ ──── ┘
 '''
 
+from itertools import cycle
+import math
 import time
 import sys
 
@@ -20,16 +22,15 @@ def get_data(ns=0):
         filedata = [line.strip() for line in file.readlines()]
     return filedata
 
-def traverse_map(moves, move_map):
+def traverse_map(moves, move_map, position='AAA'):
     steps = 0
     sl = len(moves)
-    position = 'AAA'
     while position != 'ZZZ':
         dir = moves[steps % sl]
-        print(f'({position}) - Step {steps} moving {dir} to {move_map[position][dir]}')
+#        print(f'({position}) - Step {steps} moving {dir} to {move_map[position][dir]}')
         position = move_map[position][dir]
         steps += 1
-    return steps
+    return position, steps
 
 def part_one(indata):
     # do stuff
@@ -45,7 +46,29 @@ def part_one(indata):
 
 def part_two(indata):
     # do stuff again
-    return
+    move_map = {'nodes': []}
+    for line in indata:
+        if len(line) > 0 and '=' not in line:
+            instructions = [_ for _ in line]
+        elif '=' in line:
+            destination, move = line.split(' = ')
+            move = move.strip('()').split(', ')
+            move_map[destination] = {'L': move[0], 'R': move[1]}
+            if destination[-1] == 'A':
+                move_map['nodes'].append(destination)
+    return traverse_many_nodes(instructions, move_map)
+
+def traverse_many_nodes(moves, move_map):
+    found_z = []
+    for node in move_map['nodes']:
+        for steps, move in enumerate(cycle(moves), start=1):
+            node = move_map[node][move]
+            if node[2] == 'Z':
+                found_z.append(steps)
+                break
+    # when will these coincide again?
+    return math.lcm(*(found_z))
+
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
