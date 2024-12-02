@@ -24,10 +24,14 @@ def get_data(ns=0):
             filedata.append(line.strip())
     return filedata
 
-def display_maze(grid):
-    for row in grid:
-        for col in row:
-            print(col, end='')
+def display_maze(grid, path):
+    for r, row in enumerate(grid):
+        for c, col in enumerate(row):
+            if (r, c) in path:
+                color = '\x1b[1;32;40m'
+            else:
+                color = '\x1b[1;30;40m'
+            print(color + col + '\x1b[0m', end='')
         print()
 
 def part_one(indata):
@@ -62,12 +66,19 @@ def part_one(indata):
                             path[(dy, dx)] = node[:2]
                     else:
                         continue
-    #display_maze(maze)
-    return dist
+    display_maze(maze, path)
+    return dist, maze, path
 
 def part_two(indata):
     # do stuff again
-    return
+    count = 0
+    _, maze, loop = part_one(indata)
+    for r, row in enumerate(maze):
+        for c, col in enumerate(row):
+            if (r, c)  not in loop:
+                maze[r, c] = '.'
+    display_maze(maze, loop)
+    return count, maze, loop
 
 p_trans = ['|-LJ7F', '║═╚╝╗╔']
 
@@ -87,11 +98,11 @@ data = get_data(full_or_not)
 if '-p2' in sys.argv:
     print('== Running part two ==')
     start = time.time()
-    output = part_two(data)
+    output = part_two(data)[0]
 else:
     print('== Running part one (use -p2 for part two) ==')
     start = time.time()
-    output = part_one(data)
+    output = part_one(data)[0]
 
 stop = time.time()
 
