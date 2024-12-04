@@ -13,6 +13,7 @@
 
 import time
 import sys
+from os import system
 
 def get_data(ns=0):
   day_file = sys.argv[0].split('.')[0]
@@ -70,19 +71,57 @@ def part_one(indata):
             target_count += 1
             # print('total found:', target_count)
             # for debug
-            # print_grid(zeros, path)
+            # print_grid(zeros, path, 'XMAS')
   return target_count
 
-def print_grid(array, coords):
-  s = 'XMAS'
+RED = '\033[93m'
+GREEN = '\033[92m'
+RST = '\033[0m'
+
+def print_grid(array, coords, s):
+  system('clear')
   for i, v in enumerate(coords):
     array[v[0]][v[1]] = s[i]
   for r in array:
-    print(''.join([str(_) for _ in r]))
+    for _ in r:
+      if _ in 'SM':
+        color = GREEN
+      elif _ == 'A':
+        color = RED
+      else:
+        color = RST
+      print(color + _, end='')
+    print(RST)
 
 def part_two(indata):
   # do stuff again
-  return
+  target_count = 0
+
+  b = len(indata) -1
+  r = len(indata[0]) -1
+
+  zeros = [ ['.']*(b+1) for _ in range(b+1) ]
+  a_points = []
+  x_sum = sum([ord(x) for x in 'SAM'])
+  for ri, row in enumerate(indata):
+    for ci, col in enumerate(row.strip()):
+      rcheck = ri > 0 and ri < b
+      ccheck = ci > 0 and ci < r
+      # Just find the center point of the X, ie the A
+      if indata[ri][ci] == 'A' and (rcheck and ccheck):
+        # print('A (possible X-MAS found at', ri, ci)
+        path = [0,(ri, ci),0]
+        ord1 = indata[ri+1][ci-1]+'A'+indata[ri-1][ci+1]
+        ord2 = indata[ri-1][ci-1]+'A'+indata[ri+1][ci+1]
+        if sum([ord(x) for x in ord1]) == x_sum == sum([ord(x) for x in ord2]):
+          target_count += 1
+          path = [(ri+1,ci-1), (ri, ci), (ri-1, ci+1),
+                  (ri-1, ci-1), (ri, ci), (ri+1, ci+1)
+                ]
+          # debug only
+          # print_grid(zeros, path, ord1+ord2)
+          # input('Press enter to continue')
+  return target_count
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
