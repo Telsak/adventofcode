@@ -17,13 +17,14 @@
 import time
 import sys
 from aoc_utils import get_data_f
+from functools import lru_cache
 
 def parse_stones(stones):
   # takes a list of positions, and follows the rules in a specific order
 
   new_stones = []
   # we need to parse the stones without destroying the iteration
-  for i, stone in enumerate(stones):
+  for stone in stones:
     if stone == 0:
       new_stones.append(1)
     elif len(str(stone)) % 2 == 0:
@@ -33,8 +34,7 @@ def parse_stones(stones):
       new_stones.append(lstone)
       new_stones.append(rstone)
     else:
-      mul = stone * 2024
-      new_stones.append(mul)
+      new_stones.append(stone * 2024)
   return new_stones
 
 def part_one(indata):
@@ -58,13 +58,48 @@ def part_one(indata):
   for blinks in range(EYESORE):
     #print(f'After {blinks} blink:')
     indata = parse_stones(indata)
-    #print(*indata, sep=' ')
-
   return len(indata)
 
+
+# Itertools hax to get automatic memoization?!?!? WTF thats cool!
+@lru_cache(None)
+def parse_stones_part_two(stone, blinks):
+  # we're out of blinks, return itself as counted 1
+  if blinks == 0:
+    return 1
+
+  # lets transform the stones
+  if stone == 0:
+    new_stones = [1]
+  elif len(str(stone)) % 2 == 0:
+    sl = len(str(stone)) // 2
+    lstone = int(str(stone)[:sl])
+    rstone = int(str(stone)[sl:])
+    new_stones = [lstone, rstone]
+  else:
+    new_stones = [stone * 2024]
+
+  total_stones = 0
+  for stone in new_stones:
+    total_stones += parse_stones_part_two(stone, blinks -1)
+  return total_stones
+
 def part_two(indata):
-  # do stuff again
-  return
+  # what if I use memoization, loop through each stone 75 times, save the
+  # result in a dict and continuously pass that through the next stone?
+  # --- scratch that, the dict idea sucked and even using lists just keeps
+  # running out of memory when keeping the array alive.. maybe just count
+  # the number of elements per transformation?
+  num_stones = 0
+  indata = [int(n) for n in indata[0].split()]
+
+  print('Initial arrangement:')
+  print(*indata, sep=' ')
+
+  for stone in indata:
+    num_stones += parse_stones_part_two(stone, 75)
+
+  return num_stones
 
 full_or_not = '--full' not in sys.argv
 data = get_data_f(full_or_not, 'lines')
