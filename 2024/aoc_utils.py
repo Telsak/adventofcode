@@ -22,6 +22,17 @@ def get_data_f(ns=0, mode='lines'):
       filedata = [line.strip() for line in file.readlines()]
   return filedata
 
+def add_border_to_2d_grid(grid, character):
+  width = len(grid[0])
+  row = [character for _ in range(width+2)]
+  for i in range(len(grid)):
+    grid[i].insert(0, character)
+    grid[i].append(character)
+  grid.insert(0, row)
+  grid.append(row)
+
+  return grid
+
 colors = [
     "\033[38;2;0;0;128m",     # Dark Blue
     "\033[38;2;0;32;160m",    # Deep Blue
