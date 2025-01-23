@@ -21,10 +21,12 @@ from collections import deque
 
 def bfs_zone(y, x, visited, _grid):
   # keep searching for all neighbors of _grid[y][x] that are equal
-  # return _visited coords, area, and edges
+  # return area and edges
   dirs = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+  ne = [[-1,1], [1,1], [1,-1], [-1,-1]]
 
-  area, edges = 1, 0
+  edges = 0
+  area = set()
   zone = _grid[y][x]
 
   nodes = deque([(y, x)])
@@ -32,7 +34,8 @@ def bfs_zone(y, x, visited, _grid):
   while nodes:
     node = nodes.popleft()
     visited.add(node)
-    for dir in dirs:
+    area.add(node)
+    for di, dir in enumerate(dirs):
       ty = node[0] + dir[0]
       tx = node[1] + dir[1]
       #input(f'Testing {(ty, tx)}')
@@ -42,10 +45,27 @@ def bfs_zone(y, x, visited, _grid):
       else:
         if (ty, tx) not in visited:
           #print('havent seen', (ty, tx), 'before')
-          area += 1
           nodes.append((ty, tx))
           visited.add((ty, tx))
-  return area, edges
+
+  corners = 0
+  for node in area:
+    y, x = node
+    zone = _grid[y][x]
+    for di in range(len(dirs)):
+      ty1 = y + dirs[di][0]
+      tx1 = x + dirs[di][1]
+      i = (di + 1) % len(dirs)
+      ty2 = y + dirs[i][0]
+      tx2 = x + dirs[i][1]
+      ty3 = y + dirs[di][0] + dirs[i][0]
+      tx3 = x + dirs[di][1] + dirs[i][1]
+      if zone != _grid[ty1][tx1] and zone != _grid[ty2][tx2]:
+        corners += 1
+      elif (zone*2 == _grid[ty1][tx1] + _grid[ty2][tx2]) and zone != _grid[ty3][tx3]:
+        corners += 1
+
+  return area, edges, corners
 
 def part_one(indata):
   # prep the grid so I dont have to worry about boundaries
@@ -63,15 +83,38 @@ def part_one(indata):
       if (r, c) in visited:
         continue
       # found a new region
-      area, edges = bfs_zone(r, c, visited, indata)
+      area, edges, _ = bfs_zone(r, c, visited, indata)
+      area = len(area)
       print(f'A region of {indata[r][c]} with price {area} * {edges} = {area * edges}.')
+      #input(f'corners {_}')
       total += (area * edges)
+
 
   return total
 
 def part_two(indata):
-  # do stuff again
-  return
+  # prep the grid so I dont have to worry about boundaries
+  indata = add_border_to_2d_grid(indata, r'#')
+
+  visited = set()
+  region = ''
+  total = 0
+
+  width = len(indata[0]) - 1
+  height = len(indata) - 1
+  
+  for r in range(1, width):
+    for c in range(1, height):
+      if (r, c) in visited:
+        continue
+      # found a new region
+      area, edges, corners = bfs_zone(r, c, visited, indata)
+      area = len(area)
+      #print(f'A region of {indata[r][c]} with price {area} * {corners} = {area * corners}.')
+      total += (area * corners)
+
+
+  return total
 
 full_or_not = '--full' not in sys.argv
 data = get_data_f(full_or_not, 'grid')
