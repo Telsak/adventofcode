@@ -23,7 +23,6 @@ def bfs_zone(y, x, visited, _grid):
   # keep searching for all neighbors of _grid[y][x] that are equal
   # return area and edges
   dirs = [[-1, 0], [0, 1], [1, 0], [0, -1]]
-  ne = [[-1,1], [1,1], [1,-1], [-1,-1]]
 
   edges = 0
   area = set()
