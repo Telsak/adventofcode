@@ -44,7 +44,7 @@ def part_one(indata):
 
   tokens = 0
   for game in games:
-    tokens += scan_game(game[0], game[1], game[2])
+    tokens += solved_equation(game[0], game[1], game[2], 1)
 
   return tokens
 
@@ -61,9 +61,65 @@ def scan_game(a, b, prize):
           tokens = (ai * 3) + bi
   return tokens
 
+def solved_equation(a, b, prize, part=2):
+  # the new big number is too big to bruteforce like I did in part 1
+  if part == 1:
+    CORRECTION = 0
+  else:
+    CORRECTION = 10000000000000
+
+  ax, ay = a
+  bx, by = b
+  px = prize[0] + CORRECTION
+  py = prize[1] + CORRECTION
+
+  b = abs((bx * ay) - (by * ax))
+  p = abs((px * ay) - (py * ax))
+  
+  b = p/b
+
+  if b.is_integer():
+    a = int((px - (int(b) * bx)) / ax)
+    # verify the solution actually works, before returning OK
+    try:
+      assert (a * ax + int(b) * bx) == px
+      assert (a * ay + int(b) * by) == py
+    except:
+      a, b = 0, 0
+  else:
+    a, b = 0, 0
+
+  return (a * 3) + int(b)
+
 def part_two(indata):
   # do stuff again
-  return
+  games = []
+  for line in indata:
+    if 'A:' in line:
+      btn_a = []
+      line = line.split(':')[1].split(',')
+      ax = int(line[0][3:])
+      ay = int(line[1][3:])
+      btn_a = [ax, ay]
+    elif 'B:' in line:
+      btn_b = []
+      line = line.split(':')[1].split(',')
+      bx = int(line[0][3:])
+      by = int(line[1][3:])
+      btn_b = [bx, by]
+    elif 'Prize' in line:
+      line = line.split(':')[1].split(',')
+      px = int(line[0][3:])
+      py = int(line[1][3:])
+      prize = [px, py]
+
+      games.append([btn_a, btn_b, prize])
+
+  tokens = 0
+  for game in games:
+    tokens += solved_equation(game[0], game[1], game[2])
+
+  return tokens
 
 full_or_not = '--full' not in sys.argv
 data = get_data_f(full_or_not, 'lines')
