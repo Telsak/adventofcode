@@ -5,7 +5,7 @@
  █   [ Filename ............................................... day15.py ]   █
  █   [ Type ................................. Advent of Code 2024 puzzle ]   █
  █                                                                           █
- █   Day #: Warehouse Woes                                                   █
+ █   Day 15: Warehouse Woes                                                  █
  █   https://adventofcode.com/2024/day/15                                    █
  █                                                                           █
  █             [ Written by ........................... telsak ]             █
@@ -65,12 +65,7 @@ def part_one(indata):
     _y, _x = robot.get_pos()
     #print_grid(grid, robot)
 
-  gps_total = 0
-  for y in range(h):
-    for x in range(w):
-      gps_total += grid[y][x].report_gps()
-    
-  return gps_total
+  return sum(col.report_gps() for row in grid for col in row)
 
 def part_two(indata):
   # do stuff again
