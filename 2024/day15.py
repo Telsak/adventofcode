@@ -77,7 +77,7 @@ def part_two(indata):
   return
 
 class grid_object:
-  def __init__(self, x=0, y=0, value='', grid_w=0, grid_h=0):
+  def __init__(self, x, y, value, grid_w, grid_h):
     self._value = value
     self._neighbor_up = (y-1,x) if y-1 >= 0 else None
     self._neighbor_right = (y,x+1) if x+1 < grid_w else None
