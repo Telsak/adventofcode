@@ -11,11 +11,15 @@
   └ ──── ─ ──══── ─ ────── ─ ───── ─ ──══── ─ ──── ─ ────── ─ ──══── ─ ──── ┘
 '''
 import sys
+from pathlib import Path
 
 def get_data_f(ns=0, mode='lines'):
   '''Imports the puzzle data either as \n separated lines or a 2D array'''
-  day_file = sys.argv[0].split('.')[0] 
-  with open (f'.//input//{day_file}_input{ns * "_small"}', 'r') as file:
+  file_name = Path(sys.argv[0]).resolve()
+  day_file = file_name.stem
+  infile = Path('input') / f'{day_file}_input{ns * "_small"}'
+
+  with infile.open ('r', encoding='utf-8') as file:
     if 'grid' in mode:
       filedata = [[x for x in line.strip()] for line in file.readlines()]
     elif 'lines' in mode:
