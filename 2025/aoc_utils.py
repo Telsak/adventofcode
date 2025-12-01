@@ -13,7 +13,7 @@
 import sys
 from pathlib import Path
 
-def get_data_f(ns=0, mode='lines'):
+def get_data(ns=0, mode='lines'):
   '''Imports the puzzle data either as \n separated lines or a 2D array'''
   file_name = Path(sys.argv[0]).resolve()
   day_file = file_name.stem
