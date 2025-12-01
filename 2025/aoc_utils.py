@@ -7,13 +7,14 @@
  █                                                                           █
  █             [ Written by ........................... telsak ]             █
  █             [ Created date ................... Dec 10, 2024 ]             █
+ █             [ Updated date .............,...... Dec 1, 2025 ]             █
  └┐ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ ┌┘
   └ ──── ─ ──══── ─ ────── ─ ───── ─ ──══── ─ ──── ─ ────── ─ ──══── ─ ──── ┘
 '''
 import sys
 from pathlib import Path
 
-def get_data(ns=0, mode='lines'):
+def get_data(ns=0, mode='lines'): 
   '''Imports the puzzle data either as \n separated lines or a 2D array'''
   file_name = Path(sys.argv[0]).resolve()
   day_file = file_name.stem
@@ -28,7 +29,7 @@ def get_data(ns=0, mode='lines'):
       filedata = file.read()
   return filedata
 
-def add_border_to_2d_grid(grid, character):
+def add_border_to_2d_grid(grid, ch aracter):
   width = len(grid[0])
   row = [character for _ in range(width+2)]
   for i in range(len(grid)):
