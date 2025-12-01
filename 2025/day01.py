@@ -13,15 +13,9 @@
  └┐ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ ┌┘
   └ ──── ─ ──══── ─ ────── ─ ───── ─ ──══── ─ ──── ─ ────── ─ ──══── ─ ──── ┘
 '''
-
+from aoc_utils import get_data
 import time
 import sys
-
-def get_data(ns=0):
-    day_file = sys.argv[0].split('.')[0]
-    with open (f'.//input//{day_file}_input{ns * "_small"}', 'r') as file:
-        filedata = [line.strip() for line in file.readlines()]
-    return filedata
 
 def part_one(indata):
     # iterate over indata instructions, mark how many times the dial is left
