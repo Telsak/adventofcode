@@ -46,15 +46,19 @@ def part_two(indata):
     password = 0
     print(f'- The dial starts by pointing at {dial_pos}')
 
+    # feel like I could do this cleaner with just % and //, but logic escapes
+    # me currently
     for line in indata:
-      op = '+' if line[0] == 'R' else '-'
-      val = int(op + line[1:])
-      dial_pos = (dial_pos + val) % 100
-      turns = (dial_pos + val) // 100
-      print(f'The dial is rotated {line} to point at {dial_pos}; during this' \
-            f' rotation, it points at 0 {turns} times.')
+      op = 1 if line[0] == 'R' else -1
+      val = int(line[1:])
+      for i in range(val):
+        dial_pos += op
+        if dial_pos % 100 == 0:
+          password += 1
+      #print(line, dial_pos % 100)
 
-    return
+    return password
+
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
