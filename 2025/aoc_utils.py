@@ -29,7 +29,7 @@ def get_data(ns=0, mode='lines'):
       filedata = file.read()
   return filedata
 
-def add_border_to_2d_grid(grid, ch aracter):
+def add_border_to_2d_grid(grid, character):
   width = len(grid[0])
   row = [character for _ in range(width+2)]
   for i in range(len(grid)):
