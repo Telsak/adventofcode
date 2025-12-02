@@ -37,7 +37,7 @@ def is_id_invalid_p2(id):
   elif idl < 4:
     return False
 
-  for width in range(2, idl):
+  for width in range(2, idl//2+1):
     # increase the width size
     #print(f'id:{id} w:{width} l//w: {idl//width}')
     if id[0:width]*(idl//width) == id and idl % width == 0:
