@@ -19,7 +19,9 @@ import time
 import sys
 
 def highest_value(my_list):
-  # dumb and simple, find the biggest value and index
+  # dumb and simple, find the biggest value and index. This works since we
+  # get a subsection of the main list and the first index hit will always be
+  # the value that is found with max()
   hv = max(my_list)
   hvi = my_list.index(hv)
   return((hv, hvi))
@@ -35,8 +37,22 @@ def part_one(indata):
   return total_joltage
 
 def part_two(indata):
-  # do stuff again
-  return
+  # Scans ahead in the list but uses an offset and rear buffer so we always
+  # have 12-n batteries to choose from. Greedily pick the first highest value
+  # and so on...
+  total_joltage = []
+  for bank in indata:
+    gi, hvi = 0, 0
+    joltage = ''
+    for i in range(12):
+      #print(f'Checking {bank[gi:-11+i or None]} at index {gi}')
+      hv, hvi = highest_value(bank[gi:-11+i or None])
+      gi = gi + hvi + 1
+      #print(f'Highest found: {hv} at index {hvi}')
+      joltage += hv
+    total_joltage.append(int(joltage))
+    #print('===',joltage,'===')
+  return sum(total_joltage)
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
