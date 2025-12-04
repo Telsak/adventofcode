@@ -26,8 +26,8 @@ def print_grid(_grid, robot):
   RED = colors[-2]
   YELLOW = colors[-3]
   RESET = colors[-1]
-  #time.sleep(0.03)
-  #os.system('clear')
+  time.sleep(0.05)
+  os.system('clear')
   cmap = {'#': BLUE, 'O': RED, '@': YELLOW}
   for y, row in enumerate(_grid):
     for x, col in enumerate(row):
@@ -62,13 +62,38 @@ def part_one(indata):
 
   for move in dirs:
     robot.move(move, grid)
-    _y, _x = robot.get_pos()
+    #_y, _x = robot.get_pos()
     #print_grid(grid, robot)
 
   return sum(col.report_gps() for row in grid for col in row)
 
 def part_two(indata):
   # do stuff again
+  dirs = ''.join(re.findall(r'[\^\<\>v]', indata))
+  grid = ''.join(re.findall(r'[#.O@\n]', indata)).rstrip().split('\n') 
+  cmap = {'#': '##',
+          'O': '[]',
+          '.': '..',
+          '@': '@.'
+        }
+  grid = [[_ for _ in ''.join([cmap[col] for col in row])] for row in grid]
+  
+  w = len(grid[0])
+  h = len(grid)
+  for y in range(h):
+    for x in range(w):
+      if grid[y][x] == '@':
+        robot = pushing_robot(y, x)
+        r = y,x
+        pval = '.'
+      else:
+        pval = grid[y][x]
+      grid[y][x] = grid_object(x, y, pval, w, h)
+  grid[r[0]][r[1]].set_value('.')
+
+  for move in dirs:
+    robot.move(move, grid)
+
   return
 
 class grid_object:
@@ -81,8 +106,15 @@ class grid_object:
     self._x = x
     self._y = y
 
-  def report_gps(self):
-    return int(self.get_value() == 'O') * ((100 * self._y) + self._x)
+  def report_gps(self, grid_w=0):
+    if self.get_value() == 'O':
+      return (100 * self._y) + self._x
+    elif self.get_value() == '[':
+      left = self._x
+      right = abs((left + 1) - grid_w)
+      distance = min(left, right)
+      return (100 * self._y) + distance
+    return 0
 
   def can_move(self, dir, grid):
     dirs = {'^':  self._neighbor_up,
@@ -103,17 +135,29 @@ class grid_object:
     else:
       return False
 
+  def can_move_p2(self, dir, grid):
+    dirs = {'^':  self._neighbor_up,
+            '>':  self._neighbor_right,
+            'v':  self._neighbor_down,
+            '<':  self._neighbor_left
+           }
+    if dirs[dir] is not None:
+      ny = dirs[dir][0]
+      nx = dirs[dir][1]
+      if grid[ny][nx].get_value() == '#':
+        return False
+
+
   def set_value(self, value):
     self._value = value
 
   def get_value(self):
-    return self._value
+     return self._value
 
 class pushing_robot:
   def __init__(self, y=0, x=0):
     self._y = y
     self._x = x
-    self._value = '@'
 
   def move(self, dir, grid):
     dirs = {'^':  (-1,0),
