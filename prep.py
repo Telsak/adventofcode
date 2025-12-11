@@ -60,7 +60,7 @@ def get_input_files(date, aoc_dir):
 def get_todays_puzzle_title(date):
   # takes a datime.now() object as input
   # returns the title of the puzzle, duh.
-  day, year = 5, date.year
+  day, year = date.day, date.year
   try:
     print('trying to get puzzle page')
     aoc_url = f'https://adventofcode.com/{year}/day/{day}'
