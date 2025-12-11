@@ -44,8 +44,32 @@ def part_one(indata):
   return total
 
 def part_two(indata):
-  # do stuff again
-  return
+  # ok so crazy idea, but what if we just build the number ranges real quick
+  # using sets, and just union them together to get all unique IDs
+  # I KNEW IT IT WAS A FUCKING TRAP GDI
+  # ok ok.. all we really need is limit the ranges. Subtract the smallest num
+  # from all values, assuming it won't break the smallest end value?
+  # should shift all numbers into more manageable ranges but not fuck with the
+  # relative worth in ids in ranges. THIS IS WHY HE IGNORES THE OTHER PART OF
+  # THE INDATA??!? 
+  # Nope..
+
+  fresh_ids = set()
+
+  smallest = None
+  fresh_ranges = []
+  unique_ranges = []
+  
+  for i, line in enumerate(indata):
+    if '-' in line:
+      fresh = [int(x) for x in line.split('-')]
+      fresh_ranges.append(fresh)
+      #fresh_ids = fresh_ids.union(range(fresh[0], fresh[1]+1))
+  
+  fresh_ranges.sort()
+  print(fresh_ranges)
+      
+  return 
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
