@@ -40,6 +40,10 @@ def add_border_to_2d_grid(grid, character):
 
   return grid
 
+def get_table_column(table, col_index):
+  col = [table[i][col_index] for i in range(len(table))]
+  return col
+
 colors = [
     "\033[38;2;0;0;128m",     #  0 Dark Blue
     "\033[38;2;0;32;160m",    #  1 Deep Blue
