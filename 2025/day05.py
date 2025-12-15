@@ -52,24 +52,34 @@ def part_two(indata):
   # should shift all numbers into more manageable ranges but not fuck with the
   # relative worth in ids in ranges. THIS IS WHY HE IGNORES THE OTHER PART OF
   # THE INDATA??!? 
-  # Nope..
+  # Nope.. The numbers are still enormous, using sets == run out of memory fast
+  # Going to try with merging ranges instead, so not keeping things in memory
+  # Iterate over all ranges except first one, as that is my starting point
 
-  fresh_ids = set()
-
-  smallest = None
   fresh_ranges = []
   unique_ranges = []
   
-  for i, line in enumerate(indata):
+  for line in indata:
     if '-' in line:
       fresh = [int(x) for x in line.split('-')]
       fresh_ranges.append(fresh)
-      #fresh_ids = fresh_ids.union(range(fresh[0], fresh[1]+1))
   
-  fresh_ranges.sort()
-  print(fresh_ranges)
-      
-  return 
+  fresh_ranges.sort(key=lambda x: x[0])
+  
+  start, end = fresh_ranges[0]
+  for rstart, rend in fresh_ranges:
+    if rstart <= end:
+      end = max(end, rend)
+    else:
+      unique_ranges.append([start, end])
+      start, end = rstart, rend
+  unique_ranges.append([start, end])
+
+  total = 0
+  for i in unique_ranges:
+    total += (i[1]+1) - i[0]
+
+  return total
 
 full_or_not = '--full' not in sys.argv
 data = get_data(full_or_not)
