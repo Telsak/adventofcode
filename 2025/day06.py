@@ -34,7 +34,7 @@ def parse_table_column(table, col_index):
     lines.append(_line)
 
   return lines
-
+ 
 def part_one(indata):
   # convert the indata lines to a grid table, split on spaces
   table = []
@@ -75,8 +75,8 @@ def part_two(indata):
     # fall within the column area, based on the size already parsed from
     # the first pass
     x = 0
-    for i, seq in enumerate(indata[-1]):
-      for j in range(seq):
+    for seq in indata[-1]:
+      for _ in range(seq):
         if line[x] == ' ':
           _line += '0'
         else:
